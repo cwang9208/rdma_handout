@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 	int err;
 
 	/* Set up RDMA CM structures */
+
 	cm_channel = rdma_create_event_channel();
 	if (!cm_channel)
 		return 1;
@@ -148,6 +149,7 @@ int main(int argc, char *argv[])
 	conn_param.private_data_len = sizeof rep_pdata;
 
 	/* Accept connection */
+
 	err = rdma_accept(cm_id, &conn_param);
 	if (err)
 		return 1;
@@ -162,6 +164,7 @@ int main(int argc, char *argv[])
 	rdma_ack_cm_event(event);
 
 	/* Wait for receive completion */
+
 	if (ibv_get_cq_event(comp_chan, &evt_cq, &cq_context))
 		return 1;
 
@@ -175,6 +178,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	/* Add two integers and send reply back */
+
 	buf[0] = htonl(ntohl(buf[0]) + ntohl(buf[1]));
 
 	sge.addr = (uintptr_t)buf;
@@ -190,6 +194,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	/* Wait for send completion */
+
 	if (ibv_get_cq_event(comp_chan, &evt_cq, &cq_context))
 		return 1;
 
@@ -200,5 +205,6 @@ int main(int argc, char *argv[])
 		return 1;
 
 	ibv_ack_cq_events(cq, 2);
+	
 	return 0;
 }

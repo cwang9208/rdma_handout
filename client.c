@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -58,10 +59,13 @@ int main(int argc, char *argv[])
 		.ai_socktype = SOCK_STREAM
 	};
 	int n;
+
 	uint32_t *buf;
+	
 	int err;
 
 	/* Set up RDMA CM structures */
+
 	cm_channel = rdma_create_event_channel();
 	if (!cm_channel)
 		return 1;
@@ -75,6 +79,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	/* Resolve server address and route */
+
 	for (t = res; t; t = t->ai_next)
 	{
 		err = rdma_resolve_addr(cm_id, NULL, t->ai_addr, RESOLVE_TIMEOUT_MS);
@@ -149,6 +154,7 @@ int main(int argc, char *argv[])
 	conn_param.retry_count = 7;
 
 	/* Connect to server */
+
 	err = rdma_connect(cm_id, &conn_param);
 	if (err)
 		return err;
@@ -177,6 +183,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	/* Write/send two integers to be added */
+
 	buf[0] = strtoul(argv[2], NULL, 0);
 	buf[1] = strtoul(argv[3], NULL, 0);
 
@@ -213,6 +220,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	/* Wait for receive completion */
+	
 	while (1) {
 		if (ibv_get_cq_event(comp_chan, &evt_cq, &cq_context))
 			return 1;
